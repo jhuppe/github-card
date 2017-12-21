@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
 import axios from 'axios';
 
@@ -19,20 +18,10 @@ const Card = (props) => {
   );
 };
 
-let data = [
-  { name: "Paul O'Shannessy",
-    avatar_url: "https://avatars.githubusercontent.com/u/8445?v=3",
-    company: "Facebook"}, 
-  { name: "Ben Alpert",
-    avatar_url: "https://avatars.githubusercontent.com/u/6820?v=3",
-    company: "Facebook"
-  }
-]
 const CardList = (props) => {
   return (
     <div>
-      <Form />
-     {props.cards.map(card => <Card {...card} />)}
+     {props.cards.map(card => <Card key={card.id} {...card} />)}
     </div>
   );
 }
@@ -41,10 +30,10 @@ class Form extends React.Component {
   state = { userName: ''}
   handleSubmit = (event) => {
     event.preventDefault();
-    // console.log('Event: Form Submit', this.event.target.value)
     axios.get(`https://api.github.com/users/${this.state.userName}`)
       .then(resp => {
         this.props.onSubmit(resp.data);
+        this.setState({ userName: ''});
       });
   };
   render () {
@@ -56,23 +45,13 @@ class Form extends React.Component {
           placeholder="Github username" required />
         <button type="submit">Add card</button>
       </form>
-    )
+    );
   }
 }
 
 class App extends React.Component {
   state = {
-    cards: [
-      {
-        name: "Paul O'Shannessy",
-        avatar_url: "https://avatars.githubusercontent.com/u/8445?v=3",
-        company: "Facebook"
-      },
-      {
-        name: "Sophie Alpert",
-        avatar_url: "https://avatars.githubusercontent.com/u/6820?v=3",
-        company: "Facebook"},
-    ]
+    cards: []
   };
 
   addNewCard = (cardInfo) => {
